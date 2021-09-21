@@ -463,11 +463,7 @@ export class mxSvgCanvas2D extends mxAbstractCanvas2D {
       this.originalRoot = this.root;
       var node = this.createElement('a');
 
-      if (node.setAttributeNS == null || (this.root.ownerDocument != document && document.documentMode == null)) {
-        node.setAttribute('xlink:href', link);
-      } else {
-        node.setAttributeNS(mxConstants.NS_XLINK, 'xlink:href', link);
-      }
+      node.setAttribute('xlink:href', link);
 
       this.root.appendChild(node);
       this.root = node;

@@ -101,45 +101,6 @@ export function bootstrap() {
     mxClient.languages = window.mxLanguages;
   }
 
-  if (mxClient.IS_VML) {
-    if (mxClient.IS_SVG) {
-      mxClient.IS_VML = false;
-    } else {
-      if (document.namespaces != null) {
-        if (document.documentMode == 8) {
-          document.namespaces.add(mxClient.VML_PREFIX, 'urn:schemas-microsoft-com:vml', '#default#VML');
-          document.namespaces.add(mxClient.OFFICE_PREFIX, 'urn:schemas-microsoft-com:office:office', '#default#VML');
-        } else {
-          document.namespaces.add(mxClient.VML_PREFIX, 'urn:schemas-microsoft-com:vml');
-          document.namespaces.add(mxClient.OFFICE_PREFIX, 'urn:schemas-microsoft-com:office:office');
-        }
-      }
-
-      if (mxClient.IS_QUIRKS && document.styleSheets.length >= 30) {
-        (function () {
-          var node = document.createElement('style');
-          node.type = 'text/css';
-          node.styleSheet.cssText =
-            mxClient.VML_PREFIX +
-            '\\:*{behavior:url(#default#VML)}' +
-            mxClient.OFFICE_PREFIX +
-            '\\:*{behavior:url(#default#VML)}';
-          document.getElementsByTagName('head')[0].appendChild(node);
-        })();
-      } else {
-        document.createStyleSheet().cssText =
-          mxClient.VML_PREFIX +
-          '\\:*{behavior:url(#default#VML)}' +
-          mxClient.OFFICE_PREFIX +
-          '\\:*{behavior:url(#default#VML)}';
-      }
-
-      if (window.mxLoadStylesheets) {
-        mxClient.link('stylesheet', mxClient.basePath + '/css/explorer.css');
-      }
-    }
-  }
-
   // mxEditor
   if (window.mxLoadResources) {
     mxResources.add(mxClient.basePath + '/resources/editor');

@@ -374,10 +374,9 @@ export class mxGraphHandler {
     shape.isDashed = true;
 
     if (this.htmlPreview) {
-      shape.dialect = mxConstants.DIALECT_STRICTHTML;
       shape.init(this.graph.container);
     } else {
-      shape.dialect = this.graph.dialect != mxConstants.DIALECT_SVG ? mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
+      shape.dialect = mxConstants.DIALECT_SVG;
       shape.init(this.graph.getView().getOverlayPane());
       shape.pointerEvents = false;
 

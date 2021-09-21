@@ -1378,13 +1378,8 @@ export class mxGraphView extends mxEventSource {
   init() {
     this.installListeners();
     var graph = this.graph;
-
     if (graph.dialect == mxConstants.DIALECT_SVG) {
       this.createSvg();
-    } else if (graph.dialect == mxConstants.DIALECT_VML) {
-      this.createVml();
-    } else {
-      this.createHtml();
     }
   }
 
@@ -1491,102 +1486,6 @@ export class mxGraphView extends mxEventSource {
     }
   }
 
-  createHtml() {
-    var container = this.graph.container;
-
-    if (container != null) {
-      this.canvas = this.createHtmlPane('100%', '100%');
-      this.canvas.style.overflow = 'hidden';
-      this.backgroundPane = this.createHtmlPane('1px', '1px');
-      this.drawPane = this.createHtmlPane('1px', '1px');
-      this.overlayPane = this.createHtmlPane('1px', '1px');
-      this.decoratorPane = this.createHtmlPane('1px', '1px');
-      this.canvas.appendChild(this.backgroundPane);
-      this.canvas.appendChild(this.drawPane);
-      this.canvas.appendChild(this.overlayPane);
-      this.canvas.appendChild(this.decoratorPane);
-      container.appendChild(this.canvas);
-      this.updateContainerStyle(container);
-
-      if (mxClient.IS_QUIRKS) {
-        var onResize = (evt) => {
-          var bounds = this.getGraphBounds();
-          var width = bounds.x + bounds.width + this.graph.border;
-          var height = bounds.y + bounds.height + this.graph.border;
-          this.updateHtmlCanvasSize(width, height);
-        };
-
-        mxEvent.addListener(window, 'resize', onResize);
-      }
-    }
-  }
-
-  updateHtmlCanvasSize(width, height) {
-    if (this.graph.container != null) {
-      var ow = this.graph.container.offsetWidth;
-      var oh = this.graph.container.offsetHeight;
-
-      if (ow < width) {
-        this.canvas.style.width = width + 'px';
-      } else {
-        this.canvas.style.width = '100%';
-      }
-
-      if (oh < height) {
-        this.canvas.style.height = height + 'px';
-      } else {
-        this.canvas.style.height = '100%';
-      }
-    }
-  }
-
-  createHtmlPane(width, height) {
-    var pane = document.createElement('DIV');
-
-    if (width != null && height != null) {
-      pane.style.position = 'absolute';
-      pane.style.left = '0px';
-      pane.style.top = '0px';
-      pane.style.width = width;
-      pane.style.height = height;
-    } else {
-      pane.style.position = 'relative';
-    }
-
-    return pane;
-  }
-
-  createVml() {
-    var container = this.graph.container;
-
-    if (container != null) {
-      var width = container.offsetWidth;
-      var height = container.offsetHeight;
-      this.canvas = this.createVmlPane(width, height);
-      this.canvas.style.overflow = 'hidden';
-      this.backgroundPane = this.createVmlPane(width, height);
-      this.drawPane = this.createVmlPane(width, height);
-      this.overlayPane = this.createVmlPane(width, height);
-      this.decoratorPane = this.createVmlPane(width, height);
-      this.canvas.appendChild(this.backgroundPane);
-      this.canvas.appendChild(this.drawPane);
-      this.canvas.appendChild(this.overlayPane);
-      this.canvas.appendChild(this.decoratorPane);
-      container.appendChild(this.canvas);
-    }
-  }
-
-  createVmlPane(width, height) {
-    var pane = document.createElement(mxClient.VML_PREFIX + ':group');
-    pane.style.position = 'absolute';
-    pane.style.left = '0px';
-    pane.style.top = '0px';
-    pane.style.width = width + 'px';
-    pane.style.height = height + 'px';
-    pane.setAttribute('coordsize', width + ',' + height);
-    pane.setAttribute('coordorigin', '0,0');
-    return pane;
-  }
 
   createSvg() {
     var container = this.graph.container;

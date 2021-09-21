@@ -98,11 +98,9 @@ export class mxHandle {
 
   initShape(html) {
     if (html && this.shape.isHtmlAllowed()) {
-      this.shape.dialect = mxConstants.DIALECT_STRICTHTML;
       this.shape.init(this.graph.container);
     } else {
-      this.shape.dialect =
-        this.graph.dialect != mxConstants.DIALECT_SVG ? mxConstants.DIALECT_MIXEDHTML : mxConstants.DIALECT_SVG;
+      this.shape.dialect = mxConstants.DIALECT_SVG;
 
       if (this.cursor != null) {
         this.shape.init(this.graph.getView().getOverlayPane());

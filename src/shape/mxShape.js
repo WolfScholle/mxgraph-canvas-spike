@@ -73,7 +73,7 @@ export class mxShape {
 
     if (container != null && container.ownerSVGElement != null) {
       node = this.createSvg(container);
-    } else if (this.dialect != mxConstants.DIALECT_VML && this.isHtmlAllowed()) {
+    } else if (this.isHtmlAllowed()) {
       node = this.createHtml(container);
     } else {
       node = this.createVml(container);
@@ -490,15 +490,8 @@ export class mxShape {
     ) {
       var bb = this.createBoundingBox();
 
-      if (this.dialect == mxConstants.DIALECT_SVG) {
-        bg = this.createTransparentSvgRectangle(bb.x, bb.y, bb.width, bb.height);
-        this.node.appendChild(bg);
-      } else {
-        var rect = c.createRect('rect', bb.x / s, bb.y / s, bb.width / s, bb.height / s);
-        rect.appendChild(c.createTransparentFill());
-        rect.stroked = 'false';
-        c.root.appendChild(rect);
-      }
+      bg = this.createTransparentSvgRectangle(bb.x, bb.y, bb.width, bb.height);
+      this.node.appendChild(bg);
     }
 
     if (this.stencil != null) {

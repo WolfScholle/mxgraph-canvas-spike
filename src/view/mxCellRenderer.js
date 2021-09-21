@@ -190,7 +190,7 @@ export class mxCellRenderer {
         mxUtils.getValue(state.style, mxConstants.STYLE_TEXT_DIRECTION, mxConstants.DEFAULT_TEXT_DIRECTION)
       );
       state.text.opacity = mxUtils.getValue(state.style, mxConstants.STYLE_TEXT_OPACITY, 100);
-      state.text.dialect = isForceHtml ? mxConstants.DIALECT_STRICTHTML : state.view.graph.dialect;
+      state.text.dialect = state.view.graph.dialect;
       state.text.style = state.style;
       state.text.state = state;
       this.initializeLabel(state, state.text);
@@ -214,7 +214,7 @@ export class mxCellRenderer {
         (evt) => {
           if (this.isLabelEvent(state, evt)) {
             graph.fireMouseEvent(mxEvent.MOUSE_DOWN, new mxMouseEvent(evt, state));
-            forceGetCell = graph.dialect != mxConstants.DIALECT_SVG && mxEvent.getSource(evt).nodeName == 'IMG';
+            forceGetCell = false;
           }
         },
         (evt) => {
@@ -242,11 +242,7 @@ export class mxCellRenderer {
   }
 
   initializeLabel(state, shape) {
-    if (mxClient.IS_SVG && mxClient.NO_FO && shape.dialect != mxConstants.DIALECT_SVG) {
-      shape.init(state.view.graph.container);
-    } else {
-      shape.init(state.view.getDrawPane());
-    }
+    shape.init(state.view.getDrawPane());
   }
 
   createCellOverlays(state) {
@@ -349,10 +345,9 @@ export class mxCellRenderer {
 
   initControl(state, control, handleEvents, clickHandler) {
     var graph = state.view.graph;
-    var isForceHtml = graph.isHtmlLabel(state.cell) && mxClient.NO_FO && graph.dialect == mxConstants.DIALECT_SVG;
+    var isForceHtml = graph.isHtmlLabel(state.cell) && mxClient.NO_FO;
 
     if (isForceHtml) {
-      control.dialect = mxConstants.DIALECT_PREFERHTML;
       control.init(graph.container);
       control.node.style.zIndex = 1;
     } else {
@@ -425,7 +420,7 @@ export class mxCellRenderer {
     var getState = function (evt) {
       var result = state;
 
-      if ((graph.dialect != mxConstants.DIALECT_SVG && mxEvent.getSource(evt).nodeName == 'IMG') || mxClient.IS_TOUCH) {
+      if (mxEvent.getSource(evt).nodeName == 'IMG' || mxClient.IS_TOUCH) {
         var x = mxEvent.getClientX(evt);
         var y = mxEvent.getClientY(evt);
         var pt = mxUtils.convertPoint(graph.container, x, y);
@@ -469,8 +464,7 @@ export class mxCellRenderer {
     var value = this.getLabelValue(state);
     var wrapping = graph.isWrapping(state.cell);
     var clipping = graph.isLabelClipped(state.cell);
-    var isForceHtml = state.view.graph.isHtmlLabel(state.cell) || (value != null && mxUtils.isNode(value));
-    var dialect = isForceHtml ? mxConstants.DIALECT_STRICTHTML : state.view.graph.dialect;
+    var dialect = state.view.graph.dialect;
     var overflow = state.style[mxConstants.STYLE_OVERFLOW] || 'visible';
 
     if (
