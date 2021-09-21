@@ -74,4 +74,12 @@ export class mxRectangleShape extends mxShape {
       this.paintGlassEffect(c, x, y, w, h, this.getArcSize(w + this.strokewidth, h + this.strokewidth));
     }
   }
+
+  drawOn2dCanvas(ctx) {
+    ctx.fillStyle = this.fill;
+    ctx.fillRect(this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height);
+    ctx.strokeWidth = this.minSvgStrokeWidth;
+    ctx.strokeStyle = this.stroke;
+    ctx.strokeRect(this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height);
+  }
 }

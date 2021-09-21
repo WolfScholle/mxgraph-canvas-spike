@@ -165,10 +165,14 @@ export class mxCellRenderer {
     var isEdge = graph.getModel().isEdge(state.cell);
 
     if (state.style[mxConstants.STYLE_FONTSIZE] > 0 || state.style[mxConstants.STYLE_FONTSIZE] == null) {
-      var isForceHtml = graph.isHtmlLabel(state.cell) || (value != null && mxUtils.isNode(value));
       state.text = new this.defaultTextShape(
         value,
-        new mxRectangle(),
+        new mxRectangle(
+          state.cell.geometry.x,
+          state.cell.geometry.y,
+          state.cell.geometry.width,
+          state.cell.geometry.height
+        ),
         state.style[mxConstants.STYLE_ALIGN] || mxConstants.ALIGN_CENTER,
         graph.getVerticalAlign(state),
         state.style[mxConstants.STYLE_FONTCOLOR],
@@ -518,9 +522,14 @@ export class mxCellRenderer {
         state.text.wrap = wrapping;
         state.text.clipped = clipping;
         state.text.overflow = overflow;
-        var vis = state.text.node.style.visibility;
-        this.redrawLabelShape(state.text);
-        state.text.node.style.visibility = vis;
+
+        if (dialect === mxConstants.DIALECT_CANVAS) {
+          this.redrawLabelShape(state.text);
+        } else {
+          var vis = state.text.node.style.visibility;
+          this.redrawLabelShape(state.text);
+          state.text.node.style.visibility = vis;
+        }
       }
     }
   }
