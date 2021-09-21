@@ -63,8 +63,7 @@ export class mxEdgeHandler {
     this.points = [];
     this.abspoints = this.getSelectionPoints(this.state);
     this.shape = this.createSelectionShape(this.abspoints);
-    this.shape.dialect =
-      this.graph.dialect != mxConstants.DIALECT_SVG ? mxConstants.DIALECT_MIXEDHTML : mxConstants.DIALECT_SVG;
+    this.shape.dialect = mxConstants.DIALECT_SVG;
     this.shape.init(this.graph.getView().getOverlayPane());
     this.shape.pointerEvents = false;
     this.shape.setCursor(mxConstants.CURSOR_MOVABLE_EDGE);
@@ -95,8 +94,7 @@ export class mxEdgeHandler {
 
         if (pstate != null) {
           this.parentHighlight = this.createParentHighlightShape(pstate);
-          this.parentHighlight.dialect =
-            this.graph.dialect != mxConstants.DIALECT_SVG ? mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
+          this.parentHighlight.dialect = mxConstants.DIALECT_SVG;
           this.parentHighlight.pointerEvents = false;
           this.parentHighlight.rotation = Number(pstate.style[mxConstants.STYLE_ROTATION] || '0');
           this.parentHighlight.init(this.graph.getView().getOverlayPane());
@@ -306,11 +304,9 @@ export class mxEdgeHandler {
 
   initBend(bend, dblClick) {
     if (this.preferHtml) {
-      bend.dialect = mxConstants.DIALECT_STRICTHTML;
       bend.init(this.graph.container);
     } else {
-      bend.dialect =
-        this.graph.dialect != mxConstants.DIALECT_SVG ? mxConstants.DIALECT_MIXEDHTML : mxConstants.DIALECT_SVG;
+      bend.dialect = mxConstants.DIALECT_SVG;
       bend.init(this.graph.getView().getOverlayPane());
     }
 

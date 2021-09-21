@@ -7,14 +7,9 @@ export class mxConstants {
   static RENDERING_HINT_EXACT = 'exact';
   static RENDERING_HINT_FASTER = 'faster';
   static RENDERING_HINT_FASTEST = 'fastest';
+  static DIALECT_CANVAS = 'canvas';
   static DIALECT_SVG = 'svg';
-  static DIALECT_VML = 'vml';
-  static DIALECT_MIXEDHTML = 'mixedHtml';
-  static DIALECT_PREFERHTML = 'preferHtml';
-  static DIALECT_STRICTHTML = 'strictHtml';
   static NS_SVG = 'http://www.w3.org/2000/svg';
-  static NS_XHTML = 'http://www.w3.org/1999/xhtml';
-  static NS_XLINK = 'http://www.w3.org/1999/xlink';
   static SHADOWCOLOR = 'gray';
   static VML_SHADOWCOLOR = 'gray';
   static SHADOW_OFFSET_X = 2;

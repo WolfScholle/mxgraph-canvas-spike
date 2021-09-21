@@ -77,4 +77,13 @@ export class mxConnector extends mxPolyline {
 
     bbox.grow(size * this.scale);
   }
+
+  drawOn2dCanvas(context) {
+    context.strokeStyle = this.stroke;
+    context.fillStyle = this.fill;
+    context.beginPath();
+    context.moveTo(this.bounds.x, this.bounds.y);
+    context.lineTo(this.bounds.x + this.bounds.width, this.bounds.y + this.bounds.height);
+    context.stroke();
+  }
 }

@@ -58,8 +58,7 @@ export class mxVertexHandler {
       this.selectionBounds.height
     );
     this.selectionBorder = this.createSelectionShape(this.bounds);
-    this.selectionBorder.dialect =
-      this.graph.dialect != mxConstants.DIALECT_SVG ? mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
+    this.selectionBorder.dialect = mxConstants.DIALECT_SVG;
     this.selectionBorder.pointerEvents = false;
     this.selectionBorder.rotation = Number(this.state.style[mxConstants.STYLE_ROTATION] || '0');
     this.selectionBorder.init(this.graph.getView().getOverlayPane());
@@ -220,11 +219,9 @@ export class mxVertexHandler {
     if (sizer.isHtmlAllowed() && this.state.text != null && this.state.text.node.parentNode == this.graph.container) {
       sizer.bounds.height -= 1;
       sizer.bounds.width -= 1;
-      sizer.dialect = mxConstants.DIALECT_STRICTHTML;
       sizer.init(this.graph.container);
     } else {
-      sizer.dialect =
-        this.graph.dialect != mxConstants.DIALECT_SVG ? mxConstants.DIALECT_MIXEDHTML : mxConstants.DIALECT_SVG;
+      sizer.dialect = mxConstants.DIALECT_SVG;
       sizer.init(this.graph.getView().getOverlayPane());
     }
 
@@ -370,11 +367,9 @@ export class mxVertexHandler {
             this.state.text != null &&
             this.state.text.node.parentNode == this.graph.container
           ) {
-            this.preview.dialect = mxConstants.DIALECT_STRICTHTML;
             this.preview.init(this.graph.container);
           } else {
-            this.preview.dialect =
-              this.graph.dialect != mxConstants.DIALECT_SVG ? mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
+            this.preview.dialect = mxConstants.DIALECT_SVG;
             this.preview.init(this.graph.view.getOverlayPane());
           }
         }
@@ -1334,8 +1329,7 @@ export class mxVertexHandler {
 
           if (pstate != null) {
             this.parentHighlight = this.createParentHighlightShape(pstate);
-            this.parentHighlight.dialect =
-              this.graph.dialect != mxConstants.DIALECT_SVG ? mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
+            this.parentHighlight.dialect = mxConstants.DIALECT_SVG;
             this.parentHighlight.pointerEvents = false;
             this.parentHighlight.rotation = Number(pstate.style[mxConstants.STYLE_ROTATION] || '0');
             this.parentHighlight.init(this.graph.getView().getOverlayPane());

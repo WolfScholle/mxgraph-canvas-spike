@@ -46,7 +46,6 @@ export class mxClient {
       navigator.userAgent.indexOf('Iceweasel/2.') < 0) ||
     (navigator.userAgent.indexOf('SeaMonkey/') >= 0 && navigator.userAgent.indexOf('SeaMonkey/1.') < 0) ||
     (navigator.userAgent.indexOf('Iceape/') >= 0 && navigator.userAgent.indexOf('Iceape/1.') < 0);
-  static IS_VML = navigator.appName.toUpperCase() == 'MICROSOFT INTERNET EXPLORER';
   static IS_SVG = navigator.appName.toUpperCase() != 'MICROSOFT INTERNET EXPLORER';
   static NO_FO =
     !document.createElementNS ||

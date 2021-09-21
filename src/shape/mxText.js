@@ -118,7 +118,7 @@ export class mxText extends mxShape {
         this.node
       );
     } else {
-      var realHtml = mxUtils.isNode(this.value) || this.dialect == mxConstants.DIALECT_STRICTHTML;
+      var realHtml = mxUtils.isNode(this.value);
       var fmt = realHtml || c instanceof mxVmlCanvas2D ? 'html' : '';
       var val = this.value;
 
@@ -159,13 +159,27 @@ export class mxText extends mxShape {
     }
   }
 
+  drawOn2dCanvas(ctx) {
+    ctx.fillStyle = this.style.fontColor;
+    ctx.font = `${this.size}px ${this.family}`; // TODO:
+    // TODO: consider this.margin
+    // const x = this.bounds.x + this.bounds.width / 2;
+    // const y = this.bounds.y + this.bounds.height / 2;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(this.value, this.bounds.x, this.bounds.y);
+  }
+
   redraw() {
-    if (
+    if (this.container.getContext) {
+      const context = this.container.getContext('2d');
+      this.drawOn2dCanvas(context);
+    } else if (
       this.visible &&
       this.checkBounds() &&
       this.cacheEnabled &&
       this.lastValue == this.value &&
-      (mxUtils.isNode(this.value) || this.dialect == mxConstants.DIALECT_STRICTHTML)
+      mxUtils.isNode(this.value)
     ) {
       if (this.node.nodeName == 'DIV' && this.isHtmlAllowed()) {
         if (mxClient.IS_SVG) {
@@ -191,7 +205,7 @@ export class mxText extends mxShape {
     } else {
       super.redraw();
 
-      if (mxUtils.isNode(this.value) || this.dialect == mxConstants.DIALECT_STRICTHTML) {
+      if (mxUtils.isNode(this.value)) {
         this.lastValue = this.value;
       } else {
         this.lastValue = null;
@@ -450,9 +464,7 @@ export class mxText extends mxShape {
   getHtmlValue() {
     var val = this.value;
 
-    if (this.dialect != mxConstants.DIALECT_STRICTHTML) {
-      val = mxUtils.htmlEntities(val, false);
-    }
+    val = mxUtils.htmlEntities(val, false);
 
     val = mxUtils.replaceTrailingNewlines(val, '<div><br></div>');
     val = this.replaceLinefeeds ? val.replace(/\n/g, '<br/>') : val;
@@ -618,9 +630,7 @@ export class mxText extends mxShape {
     } else {
       var val = this.value;
 
-      if (this.dialect != mxConstants.DIALECT_STRICTHTML) {
-        val = mxUtils.htmlEntities(val, false);
-      }
+      val = mxUtils.htmlEntities(val, false);
 
       val = mxUtils.replaceTrailingNewlines(val, '<div>&nbsp;</div>');
       val = this.replaceLinefeeds ? val.replace(/\n/g, '<br/>') : val;
@@ -794,9 +804,7 @@ export class mxText extends mxShape {
     } else {
       var val = this.value;
 
-      if (this.dialect != mxConstants.DIALECT_STRICTHTML) {
-        val = mxUtils.htmlEntities(val, false);
-      }
+      val = mxUtils.htmlEntities(val, false);
 
       val = mxUtils.replaceTrailingNewlines(val, '<div><br></div>');
       val = this.replaceLinefeeds ? val.replace(/\n/g, '<br/>') : val;
@@ -842,7 +850,7 @@ export class mxText extends mxShape {
       if (divs.length > 0) {
         var dir = this.textDirection;
 
-        if (dir == mxConstants.TEXT_DIRECTION_AUTO && this.dialect != mxConstants.DIALECT_STRICTHTML) {
+        if (dir == mxConstants.TEXT_DIRECTION_AUTO) {
           dir = this.getAutoDirection();
         }
 

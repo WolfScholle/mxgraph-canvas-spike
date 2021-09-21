@@ -157,15 +157,16 @@ export class mxGraph extends mxEventSource {
     this.mouseListeners = null;
     this.renderHint = renderHint;
 
-    if (mxClient.IS_SVG) {
-      this.dialect = mxConstants.DIALECT_SVG;
-    } else if (renderHint == mxConstants.RENDERING_HINT_FASTEST) {
-      this.dialect = mxConstants.DIALECT_STRICTHTML;
-    } else if (renderHint == mxConstants.RENDERING_HINT_FASTER) {
-      this.dialect = mxConstants.DIALECT_PREFERHTML;
+    if (container && container.getContext) {
+      this.dialect = mxConstants.DIALECT_CANVAS;
     } else {
-      this.dialect = mxConstants.DIALECT_MIXEDHTML;
+      this.dialect = mxConstants.DIALECT_SVG;
     }
+    // if (mxClient.IS_SVG) {
+    //   this.dialect = mxConstants.DIALECT_SVG;
+    // } else {
+    //   this.dialect = mxConstants.DIALECT_CANVAS;
+    // }
 
     this.model = model != null ? model : new mxGraphModel();
     this.multiplicities = [];
@@ -730,15 +731,9 @@ export class mxGraph extends mxEventSource {
           c.scrollLeft += border - dx;
 
           if (extend && old == c.scrollLeft) {
-            if (this.dialect == mxConstants.DIALECT_SVG) {
-              var root = this.view.getDrawPane().ownerSVGElement;
-              var width = this.container.scrollWidth + border - dx;
-              root.style.width = width + 'px';
-            } else {
-              var width = Math.max(c.clientWidth, c.scrollWidth) + border - dx;
-              var canvas = this.view.getCanvas();
-              canvas.style.width = width + 'px';
-            }
+            var root = this.view.getDrawPane().ownerSVGElement;
+            var width = this.container.scrollWidth + border - dx;
+            root.style.width = width + 'px';
 
             c.scrollLeft += border - dx;
           }
@@ -757,15 +752,9 @@ export class mxGraph extends mxEventSource {
           c.scrollTop += border - dy;
 
           if (old == c.scrollTop && extend) {
-            if (this.dialect == mxConstants.DIALECT_SVG) {
-              var root = this.view.getDrawPane().ownerSVGElement;
-              var height = this.container.scrollHeight + border - dy;
-              root.style.height = height + 'px';
-            } else {
-              var height = Math.max(c.clientHeight, c.scrollHeight) + border - dy;
-              var canvas = this.view.getCanvas();
-              canvas.style.height = height + 'px';
-            }
+            var root = this.view.getDrawPane().ownerSVGElement;
+            var height = this.container.scrollHeight + border - dy;
+            root.style.height = height + 'px';
 
             c.scrollTop += border - dy;
           }
@@ -925,22 +914,13 @@ export class mxGraph extends mxEventSource {
       width = Math.ceil(width);
       height = Math.ceil(height);
 
-      if (this.dialect == mxConstants.DIALECT_SVG) {
-        var root = this.view.getDrawPane().ownerSVGElement;
+      var root = this.view.getDrawPane().ownerSVGElement;
 
-        if (root != null) {
-          root.style.minWidth = Math.max(1, width) + 'px';
-          root.style.minHeight = Math.max(1, height) + 'px';
-          root.style.width = '100%';
-          root.style.height = '100%';
-        }
-      } else {
-        if (mxClient.IS_QUIRKS) {
-          this.view.updateHtmlCanvasSize(Math.max(1, width), Math.max(1, height));
-        } else {
-          this.view.canvas.style.minWidth = Math.max(1, width) + 'px';
-          this.view.canvas.style.minHeight = Math.max(1, height) + 'px';
-        }
+      if (root != null) {
+        root.style.minWidth = Math.max(1, width) + 'px';
+        root.style.minHeight = Math.max(1, height) + 'px';
+        root.style.width = '100%';
+        root.style.height = '100%';
       }
 
       this.updatePageBreaks(this.pageBreaksVisible, width, height);
@@ -957,6 +937,11 @@ export class mxGraph extends mxEventSource {
 
     this.container.style.width = Math.ceil(width) + 'px';
     this.container.style.height = Math.ceil(height) + 'px';
+
+    if (this.container.getContext) {
+      this.container.width = Math.ceil(width);
+      this.container.height = Math.ceil(height);
+    }
   }
 
   updatePageBreaks(visible, width, height) {
@@ -3529,81 +3514,76 @@ export class mxGraph extends mxEventSource {
     } else {
       var canvas = this.view.getCanvas();
 
-      if (this.dialect == mxConstants.DIALECT_SVG) {
-        if (dx == 0 && dy == 0) {
-          canvas.removeAttribute('transform');
+      if (dx == 0 && dy == 0) {
+        canvas.removeAttribute('transform');
 
-          if (this.shiftPreview1 != null) {
-            var child = this.shiftPreview1.firstChild;
+        if (this.shiftPreview1 != null) {
+          var child = this.shiftPreview1.firstChild;
 
-            while (child != null) {
-              var next = child.nextSibling;
-              this.container.appendChild(child);
-              child = next;
-            }
-
-            if (this.shiftPreview1.parentNode != null) {
-              this.shiftPreview1.parentNode.removeChild(this.shiftPreview1);
-            }
-
-            this.shiftPreview1 = null;
-            this.container.appendChild(canvas.parentNode);
-            child = this.shiftPreview2.firstChild;
-
-            while (child != null) {
-              var next = child.nextSibling;
-              this.container.appendChild(child);
-              child = next;
-            }
-
-            if (this.shiftPreview2.parentNode != null) {
-              this.shiftPreview2.parentNode.removeChild(this.shiftPreview2);
-            }
-
-            this.shiftPreview2 = null;
-          }
-        } else {
-          canvas.setAttribute('transform', 'translate(' + dx + ',' + dy + ')');
-
-          if (this.shiftPreview1 == null) {
-            this.shiftPreview1 = document.createElement('div');
-            this.shiftPreview1.style.position = 'absolute';
-            this.shiftPreview1.style.overflow = 'visible';
-            this.shiftPreview2 = document.createElement('div');
-            this.shiftPreview2.style.position = 'absolute';
-            this.shiftPreview2.style.overflow = 'visible';
-            var current = this.shiftPreview1;
-            var child = this.container.firstChild;
-
-            while (child != null) {
-              var next = child.nextSibling;
-
-              if (child != canvas.parentNode) {
-                current.appendChild(child);
-              } else {
-                current = this.shiftPreview2;
-              }
-
-              child = next;
-            }
-
-            if (this.shiftPreview1.firstChild != null) {
-              this.container.insertBefore(this.shiftPreview1, canvas.parentNode);
-            }
-
-            if (this.shiftPreview2.firstChild != null) {
-              this.container.appendChild(this.shiftPreview2);
-            }
+          while (child != null) {
+            var next = child.nextSibling;
+            this.container.appendChild(child);
+            child = next;
           }
 
-          this.shiftPreview1.style.left = dx + 'px';
-          this.shiftPreview1.style.top = dy + 'px';
-          this.shiftPreview2.style.left = dx + 'px';
-          this.shiftPreview2.style.top = dy + 'px';
+          if (this.shiftPreview1.parentNode != null) {
+            this.shiftPreview1.parentNode.removeChild(this.shiftPreview1);
+          }
+
+          this.shiftPreview1 = null;
+          this.container.appendChild(canvas.parentNode);
+          child = this.shiftPreview2.firstChild;
+
+          while (child != null) {
+            var next = child.nextSibling;
+            this.container.appendChild(child);
+            child = next;
+          }
+
+          if (this.shiftPreview2.parentNode != null) {
+            this.shiftPreview2.parentNode.removeChild(this.shiftPreview2);
+          }
+
+          this.shiftPreview2 = null;
         }
       } else {
-        canvas.style.left = dx + 'px';
-        canvas.style.top = dy + 'px';
+        canvas.setAttribute('transform', 'translate(' + dx + ',' + dy + ')');
+
+        if (this.shiftPreview1 == null) {
+          this.shiftPreview1 = document.createElement('div');
+          this.shiftPreview1.style.position = 'absolute';
+          this.shiftPreview1.style.overflow = 'visible';
+          this.shiftPreview2 = document.createElement('div');
+          this.shiftPreview2.style.position = 'absolute';
+          this.shiftPreview2.style.overflow = 'visible';
+          var current = this.shiftPreview1;
+          var child = this.container.firstChild;
+
+          while (child != null) {
+            var next = child.nextSibling;
+
+            if (child != canvas.parentNode) {
+              current.appendChild(child);
+            } else {
+              current = this.shiftPreview2;
+            }
+
+            child = next;
+          }
+
+          if (this.shiftPreview1.firstChild != null) {
+            this.container.insertBefore(this.shiftPreview1, canvas.parentNode);
+          }
+
+          if (this.shiftPreview2.firstChild != null) {
+            this.container.appendChild(this.shiftPreview2);
+          }
+        }
+
+        this.shiftPreview1.style.left = dx + 'px';
+        this.shiftPreview1.style.top = dy + 'px';
+        this.shiftPreview2.style.left = dx + 'px';
+        this.shiftPreview2.style.top = dy + 'px';
       }
 
       this.panDx = dx;

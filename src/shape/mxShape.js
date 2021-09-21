@@ -29,13 +29,16 @@ export class mxShape {
   useSvgBoundingBox = false;
   verticalTextRotation = -90;
 
+  container = null;
+
   constructor(stencil) {
     this.stencil = stencil;
     this.initStyles();
   }
 
   init(container) {
-    if (this.node == null) {
+    this.container = container;
+    if (!container.getContext && this.node == null) {
       this.node = this.create(container);
 
       if (container != null) {
@@ -73,7 +76,7 @@ export class mxShape {
 
     if (container != null && container.ownerSVGElement != null) {
       node = this.createSvg(container);
-    } else if (this.dialect != mxConstants.DIALECT_VML && this.isHtmlAllowed()) {
+    } else if (this.isHtmlAllowed()) {
       node = this.createHtml(container);
     } else {
       node = this.createVml(container);
@@ -102,23 +105,34 @@ export class mxShape {
     this.redraw();
   }
 
+  drawOn2dCanvas(ctx) {
+    // TODO: implement this in necessary shapes!
+  }
+
   redraw() {
     this.updateBoundsFromPoints();
 
-    if (this.visible && this.checkBounds()) {
-      this.node.style.visibility = 'visible';
-      this.clear();
-
-      if (this.node.nodeName == 'DIV' && this.isHtmlAllowed()) {
-        this.redrawHtmlShape();
-      } else {
-        this.redrawShape();
+    if (this.container.getContext) {
+      if (this.visible && this.checkBounds()) {
+        const ctx = this.container.getContext('2d');
+        this.drawOn2dCanvas(ctx);
       }
-
-      this.updateBoundingBox();
     } else {
-      this.node.style.visibility = 'hidden';
-      this.boundingBox = null;
+      if (this.visible && this.checkBounds()) {
+        this.node.style.visibility = 'visible';
+        this.clear();
+
+        if (this.node.nodeName == 'DIV' && this.isHtmlAllowed()) {
+          this.redrawHtmlShape();
+        } else {
+          this.redrawShape();
+        }
+
+        this.updateBoundingBox();
+      } else {
+        this.node.style.visibility = 'hidden';
+        this.boundingBox = null;
+      }
     }
   }
 
@@ -490,15 +504,8 @@ export class mxShape {
     ) {
       var bb = this.createBoundingBox();
 
-      if (this.dialect == mxConstants.DIALECT_SVG) {
-        bg = this.createTransparentSvgRectangle(bb.x, bb.y, bb.width, bb.height);
-        this.node.appendChild(bg);
-      } else {
-        var rect = c.createRect('rect', bb.x / s, bb.y / s, bb.width / s, bb.height / s);
-        rect.appendChild(c.createTransparentFill());
-        rect.stroked = 'false';
-        c.root.appendChild(rect);
-      }
+      bg = this.createTransparentSvgRectangle(bb.x, bb.y, bb.width, bb.height);
+      this.node.appendChild(bg);
     }
 
     if (this.stencil != null) {

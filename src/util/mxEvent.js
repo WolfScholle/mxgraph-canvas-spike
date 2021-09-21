@@ -17,8 +17,10 @@ export class mxEvent {
 
     if (window.addEventListener) {
       return function (element, eventName, funct) {
-        element.addEventListener(eventName, funct, false);
-        updateListenerList(element, eventName, funct);
+        if (element) {
+          element.addEventListener(eventName, funct, false);
+          updateListenerList(element, eventName, funct);
+        }
       };
     } else {
       return function (element, eventName, funct) {

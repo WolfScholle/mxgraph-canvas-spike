@@ -85,8 +85,7 @@ export class mxGuide {
 
           if (this.guideX == null) {
             this.guideX = this.createGuideShape(true);
-            this.guideX.dialect =
-              this.graph.dialect != mxConstants.DIALECT_SVG ? mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
+            this.guideX.dialect = mxConstants.DIALECT_SVG;
             this.guideX.pointerEvents = false;
             this.guideX.init(this.graph.getView().getOverlayPane());
           }
@@ -120,8 +119,7 @@ export class mxGuide {
 
           if (this.guideY == null) {
             this.guideY = this.createGuideShape(false);
-            this.guideY.dialect =
-              this.graph.dialect != mxConstants.DIALECT_SVG ? mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
+            this.guideY.dialect = mxConstants.DIALECT_SVG;
             this.guideY.pointerEvents = false;
             this.guideY.init(this.graph.getView().getOverlayPane());
           }

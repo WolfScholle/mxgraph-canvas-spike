@@ -174,8 +174,7 @@ export class mxConstraintHandler {
 
             if (this.focusHighlight == null) {
               var hl = this.createHighlightShape();
-              hl.dialect =
-                this.graph.dialect == mxConstants.DIALECT_SVG ? mxConstants.DIALECT_SVG : mxConstants.DIALECT_VML;
+              hl.dialect = mxConstants.DIALECT_SVG;
               hl.pointerEvents = false;
               hl.init(this.graph.getView().getOverlayPane());
               this.focusHighlight = hl;
@@ -261,8 +260,7 @@ export class mxConstraintHandler {
           img.height
         );
         var icon = new mxImageShape(bounds, src);
-        icon.dialect =
-          this.graph.dialect != mxConstants.DIALECT_SVG ? mxConstants.DIALECT_MIXEDHTML : mxConstants.DIALECT_SVG;
+        icon.dialect = mxConstants.DIALECT_SVG;
         icon.preserveImageAspect = false;
         icon.init(this.graph.getView().getDecoratorPane());
 

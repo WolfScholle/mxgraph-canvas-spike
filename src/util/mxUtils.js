@@ -1946,17 +1946,10 @@ export class mxUtils {
     var drawPane = view.drawPane;
     var overlayPane = view.overlayPane;
 
-    if (graph.dialect == mxConstants.DIALECT_SVG) {
-      view.drawPane = document.createElementNS(mxConstants.NS_SVG, 'g');
-      view.canvas.appendChild(view.drawPane);
-      view.overlayPane = document.createElementNS(mxConstants.NS_SVG, 'g');
-      view.canvas.appendChild(view.overlayPane);
-    } else {
-      view.drawPane = view.drawPane.cloneNode(false);
-      view.canvas.appendChild(view.drawPane);
-      view.overlayPane = view.overlayPane.cloneNode(false);
-      view.canvas.appendChild(view.overlayPane);
-    }
+    view.drawPane = document.createElementNS(mxConstants.NS_SVG, 'g');
+    view.canvas.appendChild(view.drawPane);
+    view.overlayPane = document.createElementNS(mxConstants.NS_SVG, 'g');
+    view.canvas.appendChild(view.overlayPane);
 
     var translate = view.getTranslate();
     view.translate = new mxPoint(x0, y0);

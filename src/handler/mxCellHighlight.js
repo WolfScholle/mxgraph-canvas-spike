@@ -71,15 +71,11 @@ export class mxCellHighlight {
     shape.opacity = this.opacity;
     shape.isDashed = this.dashed;
     shape.isShadow = false;
-    shape.dialect = this.graph.dialect != mxConstants.DIALECT_SVG ? mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
+    shape.dialect = mxConstants.DIALECT_SVG;
     shape.init(this.graph.getView().getOverlayPane());
     mxEvent.redirectMouseEvents(shape.node, this.graph, this.state);
 
-    if (this.graph.dialect != mxConstants.DIALECT_SVG) {
-      shape.pointerEvents = false;
-    } else {
-      shape.svgPointerEvents = 'stroke';
-    }
+    shape.svgPointerEvents = 'stroke';
 
     return shape;
   }

@@ -471,12 +471,7 @@ export class mxCellEditor {
       ));
 
       if (dir == mxConstants.TEXT_DIRECTION_AUTO) {
-        if (
-          state != null &&
-          state.text != null &&
-          state.text.dialect != mxConstants.DIALECT_STRICTHTML &&
-          !mxUtils.isNode(state.text.value)
-        ) {
+        if (state != null && state.text != null && !mxUtils.isNode(state.text.value)) {
           dir = state.text.getAutoDirection();
         }
       }
