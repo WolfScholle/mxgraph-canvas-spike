@@ -7,6 +7,7 @@ export class mxConstants {
   static RENDERING_HINT_EXACT = 'exact';
   static RENDERING_HINT_FASTER = 'faster';
   static RENDERING_HINT_FASTEST = 'fastest';
+  static DIALECT_CANVAS = 'canvas';
   static DIALECT_SVG = 'svg';
   static NS_SVG = 'http://www.w3.org/2000/svg';
   static SHADOWCOLOR = 'gray';
